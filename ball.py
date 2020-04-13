@@ -9,8 +9,8 @@ class Ball(pygame.sprite.Sprite):
 
         self.direction_x = 1
         self.direction_y = .5
-        self.speed = 2
-        self._max_speed = 7
+        self.speed = 10
+        self._max_speed = 10
 
         self.image = pygame.Surface([self._size, self._size])
         self.image.fill((255, 255, 255))
@@ -19,21 +19,12 @@ class Ball(pygame.sprite.Sprite):
         self.y = y
 
     def update(self):
-        new_x = self.x + self.speed * self.direction_x
+        self.x = self.x + self.speed * self.direction_x
         new_y = self.y + self.speed * self.direction_y
-
-        # if new_x > self._max_x - self._size or new_x < 0:
-        #     print(f'Speed: {self.speed}')
-        #     # self.direction_x *= -1
-        #     self.reset()
-        #     return
-        # else:
-        self.x = new_x
         
         if new_y > self._max_y - self._size or new_y < 0:
             self.direction_y *= -1
             self.y = self.y + self.speed * self.direction_y
-            print(self.direction_y)
         else:
             self.y = new_y
 
@@ -54,4 +45,4 @@ class Ball(pygame.sprite.Sprite):
         self.y = 40
         self.direction_x = 1
         self.direction_y = .5
-        self.speed = 2
+        self.speed = 10

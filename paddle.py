@@ -11,6 +11,7 @@ class Paddle(pygame.sprite.Sprite):
         self._width = 8
         self._height = 50
         self.speed = 5
+        self.score = 0
 
         self.image = pygame.Surface([self._width, self._height])
         self.image.fill((255, 255, 255))
