@@ -9,11 +9,12 @@ class Pong():
         self._WINDOW_HEIGHT = 600
         self._SCOREBAR_HEIGHT = 100
         self._FIELD_HEIGHT = self._WINDOW_HEIGHT - self._SCOREBAR_HEIGHT
+        self._PADDLE_OFFSET = 40
         self._LINE_WIDTH = 4
         
         self.ball = Ball(50, 50, self._WINDOW_WIDTH, self._FIELD_HEIGHT)
-        self.left_paddle = Paddle(40, self._WINDOW_WIDTH, self._FIELD_HEIGHT, controls='arrows')
-        self.right_paddle = Paddle(self._WINDOW_WIDTH - 40, self._WINDOW_WIDTH, self._FIELD_HEIGHT, controls='ws')
+        self.left_paddle = Paddle(self._PADDLE_OFFSET, self._WINDOW_WIDTH, self._FIELD_HEIGHT, controls='ai')
+        self.right_paddle = Paddle(self._WINDOW_WIDTH - self._PADDLE_OFFSET, self._WINDOW_WIDTH, self._FIELD_HEIGHT, controls='arrows')
 
         self.sprite_group = pygame.sprite.Group()
         self.sprite_group.add(self.ball)
@@ -22,14 +23,6 @@ class Pong():
 
         pygame.font.init()
         self.font = pygame.font.SysFont('tlwgtypewriter', 40)
-
-    def get_text_object(self, x, y):
-        font_render = self.font.render('0', True, (255, 255, 255))
-        text_rect = font_render.get_rect()
-        text_rect.center = (x, y)
-
-        return text_rect
-
 
     def draw_text(self, screen, side, text):
         y_factor = 0.25 if side == 'left' else 0.75
@@ -46,11 +39,6 @@ class Pong():
         pygame.draw.line(screen, (255, 255, 255), [mid_point, 0], [mid_point, self._FIELD_HEIGHT], self._LINE_WIDTH)
         pygame.draw.line(screen, (255, 255, 255), [0, self._FIELD_HEIGHT], [self._WINDOW_WIDTH, self._FIELD_HEIGHT], self._LINE_WIDTH)
         
-        # left_text = self.font.render(str(self.left_paddle.score), True, (255, 255, 255))
-        # right_text = self.font.render(str(self.right_paddle.score), True, (255, 255, 255))
-        # screen.blit(left_text, (self._WINDOW_WIDTH * .25, self._FIELD_HEIGHT + .5 * self._SCOREBAR_HEIGHT))
-        # screen.blit(right_text, (self._WINDOW_WIDTH * .75, self._FIELD_HEIGHT + .5 * self._SCOREBAR_HEIGHT))
-        # print(self.font.size(str(self.left_paddle.score)))
         self.draw_text(screen, side='left', text=str(self.left_paddle.score))
         self.draw_text(screen, side='right', text=str(self.right_paddle.score))
 
@@ -60,17 +48,28 @@ class Pong():
             paddle = collisions[1]
             self.ball.bounce(paddle_y=paddle.rect.y, paddle_height=paddle._height)
 
-    def reset_sprites(self):
-        for sprite in self.sprite_group:
-            sprite.reset()
+    def run_ai(self):
+        for paddle in [self.left_paddle, self.right_paddle]:
+            if paddle._controls == 'ai':
+                if paddle.rect.y < self.ball.y:
+                    paddle.move_down()
+                elif paddle.rect.y > self.ball.y:
+                    paddle.move_up()
+
+    def reset_sprites(self, side):
+        # for sprite in self.sprite_group:
+        #     sprite.reset()
+        self.left_paddle.reset()
+        self.right_paddle.reset()
+        self.ball.reset(side=side, paddle_offset=self._PADDLE_OFFSET)
 
     def check_point_scored(self):
         if self.ball.x > self._WINDOW_WIDTH - self.ball._size:
             self.left_paddle.score += 1
-            self.reset_sprites()
+            self.reset_sprites(side='left')
         elif self.ball.x < 0:
             self.right_paddle.score += 1
-            self.reset_sprites()
+            self.reset_sprites(side='right')
 
     def run(self):
         clock = pygame.time.Clock()
@@ -83,6 +82,7 @@ class Pong():
                     return
 
             self.sprite_group.update()
+            self.run_ai()
             self.check_point_scored()
             self.check_collision()
             self.draw_field(screen)

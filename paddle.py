@@ -22,10 +22,18 @@ class Paddle(pygame.sprite.Sprite):
     def update(self):
         keys_pressed = pygame.key.get_pressed()
 
-        if keys_pressed[pygame.K_UP] and self._controls == 'arrows' or keys_pressed[ord('w')] and self._controls == 'ws':
-            self.rect.y = self.rect.y - self.speed if self.rect.y > 0 else 0
-        if keys_pressed[pygame.K_DOWN] and self._controls == 'arrows' or keys_pressed[ord('s')] and self._controls == 'ws':
-            self.rect.y = self.rect.y + self.speed if self.rect.y + self._height < self._max_y else self.rect.y
+        if self._controls == 'ai':
+            return
+        elif keys_pressed[pygame.K_UP] and self._controls == 'arrows' or keys_pressed[ord('w')] and self._controls == 'ws':
+            self.move_up()
+        elif keys_pressed[pygame.K_DOWN] and self._controls == 'arrows' or keys_pressed[ord('s')] and self._controls == 'ws':
+            self.move_down()
 
+    def move_up(self):
+        self.rect.y = self.rect.y - self.speed if self.rect.y > 0 else 0
+    
+    def move_down(self):
+        self.rect.y = self.rect.y + self.speed if self.rect.y + self._height < self._max_y else self.rect.y
+        
     def reset(self):
         self.rect.y = self._max_y / 2 - self._height / 2

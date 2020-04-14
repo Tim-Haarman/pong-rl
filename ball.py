@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y, max_x, max_y):
@@ -9,7 +10,8 @@ class Ball(pygame.sprite.Sprite):
 
         self.direction_x = 1
         self.direction_y = .5
-        self.speed = 10
+        self.speed = 3
+        self._speed_increase_per_tick = 0.005
         self._max_speed = 10
 
         self.image = pygame.Surface([self._size, self._size])
@@ -30,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
 
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
-        self.speed += 0.001 if self.speed < self._max_speed else 0
+        self.speed += self._speed_increase_per_tick if self.speed < self._max_speed else 0
 
     def bounce(self, paddle_y, paddle_height):
         self.direction_x *= -1
@@ -40,9 +42,17 @@ class Ball(pygame.sprite.Sprite):
 
         self.direction_y = y_dir
 
-    def reset(self):
-        self.x = 40
-        self.y = 40
-        self.direction_x = 1
-        self.direction_y = .5
-        self.speed = 10
+    def reset(self, side, paddle_offset):
+        
+        self.x = paddle_offset + self._size + 5 if side == 'left' else self._max_x - paddle_offset - self._size - 5
+        self.direction_x = 1 if side == 'left' else -1
+        self.y = random.randint(0, self._max_y - self._size)
+        self.direction_y = random.random() * 2 - 1
+        # if side == 'left':
+        #     self.direction_y *= -1
+        
+        # self.x = 40
+        # self.y = 40
+        # self.direction_x = 1
+        # self.direction_y = .5
+        self.speed = 3
