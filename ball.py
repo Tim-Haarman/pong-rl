@@ -43,16 +43,8 @@ class Ball(pygame.sprite.Sprite):
         self.direction_y = y_dir
 
     def reset(self, side, paddle_offset):
-        
         self.x = paddle_offset + self._size + 5 if side == 'left' else self._max_x - paddle_offset - self._size - 5
         self.direction_x = 1 if side == 'left' else -1
         self.y = random.randint(0, self._max_y - self._size)
         self.direction_y = random.random() * 2 - 1
-        # if side == 'left':
-        #     self.direction_y *= -1
-        
-        # self.x = 40
-        # self.y = 40
-        # self.direction_x = 1
-        # self.direction_y = .5
         self.speed = 3
