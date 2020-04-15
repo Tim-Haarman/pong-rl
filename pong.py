@@ -57,8 +57,7 @@ class Pong():
                     paddle.move_up()
 
     def reset_sprites(self, side):
-        # for sprite in self.sprite_group:
-        #     sprite.reset()
+        print(self.left_paddle.score)
         self.left_paddle.reset()
         self.right_paddle.reset()
         self.ball.reset(side=side, paddle_offset=self._PADDLE_OFFSET)
