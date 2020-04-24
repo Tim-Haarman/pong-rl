@@ -11,7 +11,7 @@ class Ball(pygame.sprite.Sprite):
         self.direction_x = 1
         self.direction_y = .5
         self.speed = 3
-        self._speed_increase_per_tick = 0.005
+        self._speed_increase_per_tick = 0.0005
         self._max_speed = 10
 
         self.image = pygame.Surface([self._size, self._size])
